@@ -1,0 +1,384 @@
+_type: export
+__export_format: 4
+__export_date: 2023-03-07T08:27:18.464Z
+__export_source: insomnia.desktop.app:v2022.7.5
+resources:
+  - _id: req_cc6a739c03904342bd1ade2b7ded90b0
+    parentId: fld_138b2756920141a1bb437b1068c77be7
+    modified: 1678080735129
+    created: 1678003529254
+    url: "{{ _.baseUrl }}/oauth/token"
+    name: Generate OAuth2 token
+    description: ""
+    method: POST
+    body:
+      mimeType: application/x-www-form-urlencoded
+      params:
+        - id: pair_7552c29fcead4e0f9656639c543094ba
+          name: grant_type
+          value: client_credentials
+          description: ""
+        - id: pair_24e5e440eec344ebb6014e481c2fa4ce
+          name: scope
+          value: NSMS
+          description: ""
+        - id: pair_8cc28868637d491db205733affafa87b
+          name: client_id
+          value: "{{ _.clientId }}"
+          description: ""
+        - id: pair_bf78e601eda94ac58a5d28684974127d
+          name: client_secret
+          value: "{{ _.clientSecret }}"
+          description: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/x-www-form-urlencoded
+    authentication: {}
+    metaSortKey: -1675205452905.375
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_138b2756920141a1bb437b1068c77be7
+    parentId: wrk_1e43e37976d9414081a41dac0fa1d95c
+    modified: 1678003519115
+    created: 1678003519115
+    name: Authentication
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1678003519115
+    _type: request_group
+  - _id: wrk_1e43e37976d9414081a41dac0fa1d95c
+    parentId: null
+    modified: 1677976543390
+    created: 1677976543390
+    name: Telstra API
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_23297bd3811e421284869c7add0cb920
+    parentId: fld_f4b7354dba2447cab62921bfc415c331
+    modified: 1678133841297
+    created: 1677977744329
+    url: "{{ _.baseUrl }}/messages/provisioning/subscriptions"
+    name: Create and Update Subscription
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"activeDays": 30
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: oauth2
+      grantType: client_credentials
+      scope: NSMS
+      accessTokenUrl: "{{ _.baseUrl }}/oauth/token"
+      clientId: "{{ _.clientId }}"
+      clientSecret: "{{ _.clientSecret }}"
+    metaSortKey: -1675961365695
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_f4b7354dba2447cab62921bfc415c331
+    parentId: wrk_1e43e37976d9414081a41dac0fa1d95c
+    modified: 1677977696322
+    created: 1677977696322
+    name: Subscription
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1677977696322
+    _type: request_group
+  - _id: req_d53d4abdf7824e4ca1462d259998261e
+    parentId: fld_f4b7354dba2447cab62921bfc415c331
+    modified: 1678007978278
+    created: 1678007919193
+    url: "{{ _.baseUrl }}/messages/provisioning/subscriptions"
+    name: Retrieve Subscription
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_16391b445b264a7697ccc3c7d591a916
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: oauth2
+      grantType: client_credentials
+      scope: NSMS
+      accessTokenUrl: "{{ _.baseUrl }}/oauth/token"
+      clientId: "{{ _.clientId }}"
+      clientSecret: "{{ _.clientSecret }}"
+    metaSortKey: -1675583409300.1875
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8c15795826a242a1bc9416a89f39731e
+    parentId: fld_2b1f2bf89b0f4773aa2227f010c80ae9
+    modified: 1678008050025
+    created: 1677978233605
+    url: "{{ _.baseUrl }}/messages/freetrial/bnum"
+    name: Retrieve Recipients (BNUM)
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_c2574b5b3a754fae84e5873aef2c5ded
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: oauth2
+      grantType: client_credentials
+      scope: NSMS
+      accessTokenUrl: "{{ _.baseUrl }}/oauth/token"
+      clientId: "{{ _.clientId }}"
+      clientSecret: "{{ _.clientSecret }}"
+    metaSortKey: -1674449540115.75
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_2b1f2bf89b0f4773aa2227f010c80ae9
+    parentId: wrk_1e43e37976d9414081a41dac0fa1d95c
+    modified: 1678003144628
+    created: 1678003140762
+    name: Free trial
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1677977414728
+    _type: request_group
+  - _id: req_f0992467c53b4b68b5d67c5dd5f0ada2
+    parentId: fld_2b1f2bf89b0f4773aa2227f010c80ae9
+    modified: 1678003149258
+    created: 1677977937394
+    url: "{{ _.baseUrl }}/messages/freetrial/bnum"
+    name: Register Recipients (BNUM)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"bnum": ["+61406817184"]
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: oauth2
+      grantType: client_credentials
+      scope: NSMS
+      accessTokenUrl: "{{ _.baseUrl }}/oauth/token"
+      clientId: "{{ _.clientId }}"
+      clientSecret: "{{ _.clientSecret }}"
+    metaSortKey: -1674449540065.75
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_d252d542367d49288b2a6f9853a4af2b
+    parentId: fld_3414f11c99164ecd815a9ba4433299e9
+    modified: 1678077459537
+    created: 1677977133134
+    url: "{{ _.baseUrl }}/messages/sms"
+    name: Send SMS
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"to": "+61406817184",
+        	"body": "Hello, world!"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: oauth2
+      grantType: client_credentials
+      scope: NSMS
+      accessTokenUrl: "{{ _.baseUrl }}/oauth/token"
+      clientId: "{{ _.clientId }}"
+      clientSecret: "{{ _.clientSecret }}"
+    metaSortKey: -1677977133134
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_3414f11c99164ecd815a9ba4433299e9
+    parentId: wrk_1e43e37976d9414081a41dac0fa1d95c
+    modified: 1678008135014
+    created: 1678008120538
+    name: Messaging
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1677977133084
+    _type: request_group
+  - _id: req_162192f1d581441ea906740d24ed0741
+    parentId: fld_3414f11c99164ecd815a9ba4433299e9
+    modified: 1678008494879
+    created: 1678008405983
+    url: "{% response 'body', 'req_d252d542367d49288b2a6f9853a4af2b',
+      'b64::JC5tZXNzYWdlc1swXS5tZXNzYWdlU3RhdHVzVVJM::46b', 'never', 60 %}"
+    name: Retrieve SMS Status
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_c2574b5b3a754fae84e5873aef2c5ded
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication:
+      type: oauth2
+      grantType: client_credentials
+      accessTokenUrl: "{{ _.baseUrl }}/oauth/token"
+      clientId: "{{ _.clientId }}"
+      clientSecret: "{{ _.clientSecret }}"
+    metaSortKey: -1677977133109
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_1b5892fd26b04ca4beff468b851b9edc
+    parentId: fld_3414f11c99164ecd815a9ba4433299e9
+    modified: 1678008182146
+    created: 1678008153688
+    url: "{{ _.baseUrl }}/messages/sms/healthcheck"
+    name: SMS Health Check
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_c2574b5b3a754fae84e5873aef2c5ded
+        name: Content-Type
+        value: application/json
+        description: ""
+    authentication: {}
+    metaSortKey: -1677977133084
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_2dfe00703579f913095d685388f2798651b49a26
+    parentId: wrk_1e43e37976d9414081a41dac0fa1d95c
+    modified: 1678008584632
+    created: 1677976543392
+    name: Base Environment
+    data:
+      baseUrl: todo
+      clientId: mockclientid
+      clientSecret: mockclientsecret
+    dataPropertyOrder:
+      "&":
+        - baseUrl
+        - clientId
+        - clientSecret
+    color: null
+    isPrivate: false
+    metaSortKey: 1677976543392
+    _type: environment
+  - _id: jar_2dfe00703579f913095d685388f2798651b49a26
+    parentId: wrk_1e43e37976d9414081a41dac0fa1d95c
+    modified: 1677976543392
+    created: 1677976543392
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: spc_c1a9c36fe522422b85f5d1556a7fb979
+    parentId: wrk_1e43e37976d9414081a41dac0fa1d95c
+    modified: 1677976543391
+    created: 1677976543391
+    fileName: Telstra API
+    contents: ""
+    contentType: yaml
+    _type: api_spec
+  - _id: env_3eeb32231d2a4ebbbf89144048b7cef1
+    parentId: env_2dfe00703579f913095d685388f2798651b49a26
+    modified: 1678052687206
+    created: 1678008512026
+    name: Telstra
+    data:
+      baseUrl: https://tapi.telstra.com/v2
+      clientId: TODO
+      clientSecret: TODO
+    dataPropertyOrder:
+      "&":
+        - baseUrl
+        - clientId
+        - clientSecret
+    color: "#ea0606"
+    isPrivate: false
+    metaSortKey: 1678008512026
+    _type: environment
+  - _id: env_80309202666a4fea81e98a4845e7dca7
+    parentId: env_2dfe00703579f913095d685388f2798651b49a26
+    modified: 1678008555255
+    created: 1678008545104
+    name: Mock
+    data:
+      baseUrl: https://tapi.telstra.com/v2
+      clientId: TODO
+      clientSecret: TODO
+    dataPropertyOrder:
+      "&":
+        - baseUrl
+        - clientId
+        - clientSecret
+    color: null
+    isPrivate: false
+    metaSortKey: 1678008545104
+    _type: environment

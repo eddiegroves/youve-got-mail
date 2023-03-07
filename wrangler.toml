@@ -1,0 +1,12 @@
+name = "youve-got-mail"
+main = "src/index.ts"
+compatibility_date = "2023-03-05"
+
+[vars]
+TELSTRA_API_BASE_URL = "https://tapi.telstra.com/v2"
+
+# The required secrets:
+# - TELSTRA_API_CLIENT_ID
+# - TELSTRA_API_CLIENT_SECRET
+# - SMS_TO_ADDRESS
+# - FROM_ADDRESS

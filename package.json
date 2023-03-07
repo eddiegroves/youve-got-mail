@@ -1,0 +1,24 @@
+{
+  "name": "youve-got-mail",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20230228.0",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "@vitest/coverage-c8": "^0.29.2",
+    "eslint": "^8.34.0",
+    "eslint-plugin-jsdoc": "^40.0.0",
+    "eslint-plugin-unicorn": "^45.0.2",
+    "msw": "^1.1.0",
+    "typescript": "^4.9.5",
+    "vitest": "^0.29.2",
+    "wrangler": "2.12.0"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler publish",
+    "test": "vitest",
+    "integration-test": "RUN_INTEGRATION_TEST=1 vitest run"
+  }
+}

@@ -1,0 +1,247 @@
+* You've Got Mail
+
+A simple application which sends a SMS message when an email is received. Used
+to create custom SMS alerts when a specific email is received.
+
+Why did I build this? Just something for fun to serve a specific personal use
+case and to play around with Cloudflare's email routing/worker features.
+
+** Free ✌️
+
+Everything in the application runs for free (apart from owning your own domain
+for recieving email to).
+
+- Uses Telstra's messaging API (I am based in 🇦🇺) which has a free trial for 100
+  messages.
+- All the Cloudflare pieces are available with their free plan.
+
+* Architecture overview
+
+[[file:docs/overview-diagram.svg]]
+
+Cloudflare is used as a mail server which recieves email messages, applies
+routing rules and creates email events to be handled by a Cloudflare Worker.
+
+The worker will process the email message and create an SMS message, sent using
+Telstra's messaging API.
+
+** Process flow diagram
+
+[[file:docs/process-diagram.svg]]
+
+* Cloudflare
+
+There are five steps for the Cloudflare part:
+
+** 1. Cloudflare mail DNS settings
+
+A domain must be owned (by you) and setup in Cloudflare as a website. Email DNS
+records must be added for Cloudflare to act as the domain's mail server. The
+*Email Routing* page makes this simple with a couple of buttons and warning
+banners to help with the setup.
+
+#+attr_html: :width 700
+[[file:docs/cloudflare-email-dns.png]]
+
+📚 *Documentation:* https://developers.cloudflare.com/email-routing/
+
+** 2. Cloudflare worker
+
+Create a standard Cloudflare Worker, but it will handle an *EmailEvent* instead
+of a FetchEvent.
+
+Like any other Worker, create it, deploy, manage secrets etc using the [[https://developers.cloudflare.com/workers/wrangler/commands/][Wrangler]]
+command line too.
+
+#+attr_html: :width 700
+[[file:docs/cloudflare-email-worker.png]]
+
+📚 *Documentation:* https://developers.cloudflare.com/workers/runtime-apis/email-event/
+
+*** Getting the email subject
+
+#+begin_src typescript
+// Get the email subject from the headers:
+const subject = message.headers.get("subject");
+#+end_src
+
+*** Print at all headers
+
+#+begin_src typescript
+// This will print all headers which can be viewed with `wrangler tail`
+for (const [key, value] of message.headers) {
+  console.log(`${key}: ${value}`)
+}
+#+end_src
+
+*** Read the email message body
+
+#+begin_src typescript
+const reader = message.raw.getReader();
+const decoder = new TextDecoder("utf-8");
+
+let body = "";
+
+while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+        break;
+    }
+    body += decoder.decode(value);
+}
+
+console.log(body);
+#+end_src
+
+*** Unit testing the Worker
+
+There is currently no =wrangler dev= support for testing email events that I
+could find at the time of writing. Test the =email= function directly with
+a mocked Email Message.
+
+#+begin_src typescript
+/**
+ ,* Generates a mocked email message object.
+ ,*
+ ,* @param {Partial<EmailMessage>} options Optional message overrides.
+ ,* @returns {EmailMessage} Mocked email message.
+ ,*/
+function generateMockEmailMessage(
+  options?: Partial<EmailMessage>
+): EmailMessage {
+  const readable = new Readable();
+  readable.push("Test");
+  readable.push(null);
+
+  return {
+    from: options?.from || "from@example.org",
+    to: options?.to || "to@example.org",
+    rawSize: options?.rawSize || 45_416,
+    headers: new Headers({ subject: "1 NEW: goodies" }),
+    raw: Readable.toWeb(readable) as ReadableStream,
+    setReject() {
+      // Do nothing
+    },
+    forward() {
+      return Promise.resolve();
+    },
+  };
+}
+#+end_src
+
+** 3. Email routing
+*** Catch-all route
+
+It shouldn't be required, but I could not seemingly get the email routing to
+work without adding a catch-all. No harm in having a catch-all created.
+
+#+attr_html: :width 700
+[[file:docs/cloudflare-email-catchall.png]]
+
+*** Email route to Cloudflare Worker
+
+Set an email address to route to the Cloudflare Worker.
+
+#+attr_html: :width 700
+[[file:docs/cloudflare-email-routing.png]]
+
+* Telstra messaging API
+
+Telstra offers an Australian hosted HTTP/JSON API for programmatically sending
+SMS messages.
+
+📚 [[https://dev.telstra.com/docs/messaging-api]]
+
+*Free trial plans are limited to 100 total sent messages.*
+
+** Required manual setup
+
+The free trial requires these manual setup steps:
+
+1. Create a subscription using the *Subscription -> Create and Update
+   Subscription* API.
+2. Register a recipient number for sending SMS messages to using the *Free trial
+   -> Register Recipients (BNUM)* API.
+
+After thirty days the free trial subscription will expiry and another *Create
+and Update Subscription* API request can be used to extend the subscription.
+/TBC: If you can then do another extension./
+
+** Application API usage
+
+The application uses:
+
+- Authentication -> Generate OAuth 2 token :: Used to obtain an access token for
+  authenticated API endpoints.
+- Messaging -> Health check :: Used to check if the SMS messaging service is
+  available.
+- Messaging Send SMS :: Send an SMS message to a mobile number.
+
+** API reference
+*** Subscription
+**** Create and Update Subscription
+
+- API: =/messages/provisioning/subscriptions=
+- Authentication required: *Yes*.
+
+#+begin_quote
+Invoke the provisioning API to get a dedicated mobile number for an account or
+application. Repeated calls within the lifetime of a subscription extend the
+subscription, you do not lose your current phone number
+
+Note that Free Trial apps will have a 30-Day Limit for their provisioned number.
+If the Provisioning call is made several times within that 30-Day period, it
+will return the expiryDate in the Unix format and will not add any activeDays
+until after that expiryDate. After the expiryDate, you may make another
+Provisioning call to extend the activeDays by another 30-Days.
+#+end_quote
+
+*** Free trial
+**** Register Recipients (BNUM)
+
+- API: =/messages/freetrial/bnum=
+- Authentication required: *Yes*.
+
+#+begin_quote
+Free Trial apps are required to register destination mobile numbers that will be
+used while trialling Telstra's Messaging API. Up to five destination numbers can
+be registered. These are the B numbers.
+
+Any messages sent to numbers NOT on your Free Trial app's registered bnum list
+will fail.
+
+You are not able to change the list of registered B numbers after registering
+five,
+#+end_quote
+
+*** Authentication
+**** Generate OAuth2 token
+
+- API: =/oauth/token=
+- Authentication required: *No*.
+
+#+begin_quote
+Used to generate an OAuth2 Authentication token you need for the other
+endpoints.
+
+The token will expire after one hour.
+#+end_quote
+
+*** Messaging
+**** Send SMS
+
+- API: =/messages/sms=
+- Authentication required: *Yes*.
+
+#+begin_quote
+Send an SMS Message to a single or multiple mobile number(s).
+#+end_quote
+
+**** SMS Health Check
+
+- API: =/messages/sms/healthcheck=
+- Authentication required: *No*.
+
+#+begin_quote
+Determine whether the SMS service is up or down.
+#+end_quote
