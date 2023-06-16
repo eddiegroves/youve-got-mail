@@ -3,7 +3,7 @@ export interface Environment {
   TELSTRA_API_CLIENT_SECRET: string;
   TELSTRA_API_BASE_URL: string;
   SMS_TO_ADDRESS: string;
-  FROM_ADDRESS: string;
+  FROM_ADDRESS: string | undefined;
 }
 
 export default {
@@ -84,8 +84,8 @@ export default {
       }
     }
 
-    // Validate the email from address is the expected source
-    if (message.from !== environment.FROM_ADDRESS) {
+    // If FROM_ADDRESS is set, validate the email from address is the expected source
+    if (environment.FROM_ADDRESS && message.from !== environment.FROM_ADDRESS) {
       console.error(`Unexpected from address '${message.from}'`);
       return;
     }
